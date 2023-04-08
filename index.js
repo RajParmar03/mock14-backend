@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.status(200).send("on the raj parmar mock 14 backend...");
+    res.status(200).send("on the raj parmar mock 14 updated backend...");
 });
 
 app.post("/openaccount", async (req, res) => {
