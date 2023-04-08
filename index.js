@@ -119,7 +119,7 @@ app.get("/printstatement/:id" , async(req , res) => {
     }
 });
 
-app.get("/closeaccount/:id" , async(req , res) => {
+app.delete("/closeaccount/:id" , async(req , res) => {
     let id = req.params.id;
     try {
         await UserModel.findByIdAndDelete({_id : id});
