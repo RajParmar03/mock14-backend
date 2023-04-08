@@ -10,7 +10,10 @@ const userSchema = mongoose.Schema({
     initialBalance : Number,
     adharNo : Number,
     panNo : String,
-    ledger : Array
+    ledger : {
+        type : Array,
+        default : []
+    }
 });
 
 const UserModel = mongoose.model("user" , userSchema);

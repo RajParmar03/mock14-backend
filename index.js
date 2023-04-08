@@ -3,7 +3,7 @@ const connection = require("./config/db");
 const cors = require("cors");
 const UserModel = require("./models/user.model");
 
-const url = "http://localhost:8080";
+// const url = "http://localhost:8080";
 
 
 const app = express();
@@ -46,12 +46,17 @@ app.patch("/updatekyc/:id", async (req, res) => {
 });
 
 app.patch("/depositmoney/:id", async (req, res) => {
+    console.log("in the deposite" , req.body);
     const id = req.params.id;
+    console.log("this is id" , id);
     const { amount } = req.body;
     try {
         let user = await UserModel.findById({ _id: id });
-        let newAmount = user.initialBalance + amount;
+        console.log("in the try" , user);
+        let newAmount = +user.initialBalance + amount;
+        console.log(newAmount);
         let newLedger = [...user.ledger , {deposite : amount}];
+        console.log(newLedger);
         await UserModel.findByIdAndUpdate({ _id: id } , {initialBalance : newAmount, ledger : newLedger});
         res.status(200).send({msg : "deposited successfully..."});
     } catch (error) {
@@ -65,12 +70,12 @@ app.patch("/withdrawmoney/:id", async (req, res) => {
     try {
         let user = await UserModel.findById({ _id: id });
         if(user.initialBalance >= amount){
-            let newAmount = user.initialBalance - amount;
+            let newAmount = +user.initialBalance - +amount;
             let newLedger = [...user.ledger , {withdraw : amount}];
             await UserModel.findByIdAndUpdate({ _id: id } , {initialBalance : newAmount, ledger : newLedger});
-            res.status(200).send({msg : "deposited successfully..."});
+            res.status(200).send({msg : "withdraw successfully..."});
         }else{
-            res.send(400).send({msg : "Insuffisient balance."});
+            res.status(400).send({msg : "Insuffisient balance."});
         }
     } catch (error) {
         res.status(400).send({ msg: "Failed To deposit the amound..." });
@@ -86,8 +91,8 @@ app.patch("/transfermoney/:id", async (req, res) => {
             let recievers = await UserModel.find({email});
             if(recievers.length > 0){
                 let reciever = recievers[0];
-                let newAmount = sender.initialBalance - amount;
-                let newReceiverAmount = reciever.initialBalance + amount;
+                let newAmount = +sender.initialBalance - +amount;
+                let newReceiverAmount = +reciever.initialBalance + +amount;
                 let senderLedger = [...sender.ledger , {sended : amount}];
                 let recieverLedger = [...reciever.ledger , {received : amount}];
                 await UserModel.findByIdAndUpdate({ _id: id } , {initialBalance : newAmount, ledger : senderLedger});
@@ -151,3 +156,18 @@ app.listen(8080, async () => {
 //     "adharNo" : 21345678912341,
 //     "panNo": "3221321MM11"
 // }
+
+// {
+//     "name":"pratikparmar",
+//     "gender":"male",
+//     "dob":"28/08/1995",
+//     "email":"pratikparmar@gmail.com",
+//     "mobile":1234567890,
+//     "address":"adajan,surat",
+//     "initialBalance":2000,
+//     "adharNo":545132135146,
+//     "panNo":"6554PM1234"
+// }
+
+
+// 64310eb729cd25230d0db411
